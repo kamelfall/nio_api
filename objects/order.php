@@ -1,0 +1,264 @@
+<?php
+  class Order{
+  
+    // database connection and table name
+    private $conn;
+    private $table_name = "orders";
+
+    // object properties
+    public $id;
+    public $date;
+    public $customer_id;
+    public $time;
+    public $seats;
+
+    // constructor with $db as database connection
+    public function __construct($db){
+        $this->conn = $db;
+    }
+
+    //MIN readAll funktion
+    function readAll() {
+      $query = "SELECT o.id, o.date, o.customer_id, o.time, o.seats, 
+                g.first_name, g.last_name, g.email, g.phone 
+                FROM orders AS o INNER JOIN guests g 
+                ON o.customer_id = g.id ORDER BY o.date ASC";
+                
+
+      $stmt = $this->conn->prepare($query);
+
+      $stmt->execute();
+
+      return $stmt;
+    }
+
+    // read products
+    function read(){
+      
+      // select all query
+      $query = "SELECT
+                  c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created
+              FROM
+                  " . $this->table_name . " p
+                  LEFT JOIN
+                      categories c
+                          ON p.category_id = c.id
+              ORDER BY
+                  p.created DESC";
+
+      // prepare query statement
+      $stmt = $this->conn->prepare($query);
+
+      // execute query
+      $stmt->execute();
+
+      return $stmt;
+    }
+/*
+    // used when filling up the update product form
+    function readOne(){
+    
+      // query to read single record
+      $query = "SELECT
+                  c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created
+              FROM
+                  " . $this->table_name . " p
+                  LEFT JOIN
+                      categories c
+                          ON p.category_id = c.id
+              WHERE
+                  p.id = ?
+              LIMIT
+                  0,1";
+
+      // prepare query statement
+      $stmt = $this->conn->prepare( $query );
+
+      // bind id of product to be updated
+      $stmt->bindParam(1, $this->id);
+
+      // execute query
+      $stmt->execute();
+
+      // get retrieved row
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      // set values to object properties
+      $this->name = $row['name'];
+      $this->price = $row['price'];
+      $this->description = $row['description'];
+      $this->category_id = $row['category_id'];
+      $this->category_name = $row['category_name'];
+    }*/
+
+    // create product
+    function create(){
+    
+      // query to insert record
+      $query = "INSERT INTO
+                  " . $this->table_name . "
+              SET
+                  date=:date, customer_id=:customer_id, time=:time, seats=:seats";
+
+      // prepare query
+      $stmt = $this->conn->prepare($query);
+
+      // sanitize
+      $this->date=htmlspecialchars(strip_tags($this->date));
+      $this->customer_id=htmlspecialchars(strip_tags($this->customer_id));
+      $this->time=htmlspecialchars(strip_tags($this->time));
+      $this->seats=htmlspecialchars(strip_tags($this->seats));
+
+      // bind values
+      $stmt->bindParam(":date", $this->date);
+      $stmt->bindParam(":customer_id", $this->customer_id);
+      $stmt->bindParam(":time", $this->time);
+      $stmt->bindParam(":seats", $this->seats);
+
+      // execute query
+      if($stmt->execute()){
+          return true;
+      }
+
+      return false;
+      
+    }
+
+    // update the product
+    function update(){
+    
+      // update query
+      $query = "UPDATE
+                  " . $this->table_name . "
+              SET
+                  date = :date,
+                  customer_id = :customer_id,
+                  time = :time,
+                  seats = :seats
+              WHERE
+                  id = :id";
+
+      // prepare query statement
+      $stmt = $this->conn->prepare($query);
+
+      // sanitize
+      $this->date=htmlspecialchars(strip_tags($this->date));
+      $this->customer_id=htmlspecialchars(strip_tags($this->customer_id));
+      $this->time=htmlspecialchars(strip_tags($this->time));
+      $this->seats=htmlspecialchars(strip_tags($this->seats));
+      $this->id=htmlspecialchars(strip_tags($this->id));
+
+      // bind new values
+      $stmt->bindParam(':date', $this->date);
+      $stmt->bindParam(':customer_id', $this->customer_id);
+      $stmt->bindParam(':time', $this->time);
+      $stmt->bindParam(':seats', $this->seats);
+      $stmt->bindParam(':id', $this->id);
+
+      // execute the query
+      if($stmt->execute()){
+          return true;
+      }
+
+      return false;
+    }
+
+    // delete the product
+    function delete(){
+    
+      // delete query
+      $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
+
+      // prepare query
+      $stmt = $this->conn->prepare($query);
+
+      // sanitize
+      $this->id=htmlspecialchars(strip_tags($this->id));
+
+      // bind id of record to delete
+      $stmt->bindParam(1, $this->id);
+
+      // execute query
+      if($stmt->execute()){
+          return true;
+      }
+
+      return false;
+      
+    }
+
+
+    // search products
+    function search($keywords){
+    
+      // select all query
+      $query = "SELECT
+                  c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created
+              FROM
+                  " . $this->table_name . " p
+                  LEFT JOIN
+                      categories c
+                          ON p.category_id = c.id
+              WHERE
+                  p.name LIKE ? OR p.description LIKE ? OR c.name LIKE ?
+              ORDER BY
+                  p.created DESC";
+
+      // prepare query statement
+      $stmt = $this->conn->prepare($query);
+
+      // sanitize
+      $keywords=htmlspecialchars(strip_tags($keywords));
+      $keywords = "%{$keywords}%";
+
+      // bind
+      $stmt->bindParam(1, $keywords);
+      $stmt->bindParam(2, $keywords);
+      $stmt->bindParam(3, $keywords);
+
+      // execute query
+      $stmt->execute();
+
+      return $stmt;
+    }
+
+    // read products with pagination
+    public function readPaging($from_record_num, $records_per_page){
+    
+      // select query
+      $query = "SELECT
+                  c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created
+              FROM
+                  " . $this->table_name . " p
+                  LEFT JOIN
+                      categories c
+                          ON p.category_id = c.id
+              ORDER BY p.created DESC
+              LIMIT ?, ?";
+
+      // prepare query statement
+      $stmt = $this->conn->prepare( $query );
+
+      // bind variable values
+      $stmt->bindParam(1, $from_record_num, PDO::PARAM_INT);
+      $stmt->bindParam(2, $records_per_page, PDO::PARAM_INT);
+
+      // execute query
+      $stmt->execute();
+
+      // return values from database
+      return $stmt;
+    }
+
+    // used for paging products
+    public function count(){
+      $query = "SELECT COUNT(*) as total_rows FROM " . $this->table_name . "";
+
+      $stmt = $this->conn->prepare( $query );
+      $stmt->execute();
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      return $row['total_rows'];
+    }
+
+  }
