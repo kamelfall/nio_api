@@ -1,4 +1,4 @@
-<!-- <?php
+<?php
 
   // required headers
   header("Access-Control-Allow-Origin: *");
@@ -29,18 +29,18 @@
 
   ){
 
-    $guest->first_name = $first_name->first_name;
-    $guest->last_name = $last_name->last_name;
-    $guest->email = $email->email;
-    $guest->phone = $phone->phone;
-
+    $guest->first_name = $data->first_name;
+    $guest->last_name = $data->last_name;
+    $guest->email = $data->email;
+    $guest->phone = $data->phone;
+    
     if($guest->createCustomer()) {
 
       // set response code - 201 created
       http_response_code(201);
   
       // tell the user
-      echo json_encode(array("message" => "Order was created."));
+      echo json_encode(array("message" => "Guest was created."));
     } 
     else {
   
@@ -48,7 +48,7 @@
       http_response_code(503);
 
       // tell the user
-      echo json_encode(array("message" => "Unable to create order."));
+      echo json_encode(array("message" => "Unable to create guest."));
     }
   }
 ?>
