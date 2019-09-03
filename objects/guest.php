@@ -32,5 +32,34 @@
 
       return $stmt;
     }
+
+    public function createCustomer() {
+      $query = "INSERT INTO " . $this->$table_name . 
+      " SET
+          first_name=:first_name, 
+          last_name=:last_name, 
+          email=:email, 
+          phone=:phone "
+      ;
+
+      $stmt = $this->conn->prepare( $query );
+      $stmt->execute();
+
+      $this->firs_name=htmlspecialchars(strip_tags($this->firs_name));
+      $this->last_name=htmlspecialchars(strip_tags($this->last_name));
+      $this->email=htmlspecialchars(strip_tags($this->email));
+      $this->phone=htmlspecialchars(strip_tags($this->phone));
+
+      $stmt->bindParam(":first_name", $this->first_name);
+      $stmt->bindParam(":last_name", $this->last_name);
+      $stmt->bindParam(":email", $this->email);
+      $stmt->bindParam(":phone", $this->phone);
+
+      if($stmt->execute()){
+        return true;
+    }
+
+    return false;
+    }
   }
 ?>
