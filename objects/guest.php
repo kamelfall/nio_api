@@ -59,5 +59,34 @@
 
     return false;
     }
+
+    function search($keywords){
+
+      // select all query
+      $query = "SELECT o.id, o.date, o.customer_id, o.time, o.seats, 
+                g.first_name, g.last_name, g.email, g.phone 
+                FROM guests AS g INNER JOIN orders o 
+                ON g.id = o.customer_id WHERE g.email = ?
+                LIMIT 1";
+
+
+      //$query = "SELECT * FROM guests";
+
+      // prepare query statement
+      $stmt = $this->conn->prepare($query);
+
+      // sanitize
+      $keywords=htmlspecialchars(strip_tags($keywords));
+      //$keywords = "%{$keywords}%";
+
+      // bind
+      $stmt->bindParam(1, $keywords);
+
+      // execute query
+      $stmt->execute();
+
+      return $stmt;
+
+    }
   }
 ?>

@@ -1,43 +1,44 @@
 <?php
   // required headers
   header("Access-Control-Allow-Origin: *");
+  header("Access-Control-Allow-Methods: GET");
   header("Content-Type: application/json; charset=UTF-8");
   
   // include database and object files
   include_once '../config/database.php';
-  include_once '../objects/order.php';
+  include_once '../objects/guest.php';
   
   // instantiate database and product object
   $database = new Database();
   $db = $database->getConnection();
   
   // initialize object
-  $order = new Order($db);
+  $guest = new Guest($db);
   
   // get keywords
   $keywords=isset($_GET["s"]) ? $_GET["s"] : "";
   
   // query products
-  $stmt = $order->search($keywords);
+  $stmt = $guest->search($keywords);
   $num = $stmt->rowCount();
   
   // check if more than 0 record found
   if($num>0){
   
       // products array
-      $orders_arr=array();
-      $orders_arr["records"]=array();
+      $guests_arr=array();
+      $guests_arr["records"]=array();
   
       // retrieve our table contents
       // fetch() is faster than fetchAll()
       // http://stackoverflow.com/questions/2770630/pdofetchall-vs-pdofetch-in-a-loop
-      while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+      while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
           // extract row
           // this will make $row['name'] to
           // just $name only
           extract($row);
   
-          $order_item=array(
+          $guest_item=array(
               "order_id" => $id,
               "date" => $date,
               "customer_id" => $customer_id,
@@ -49,14 +50,14 @@
               "phone" => $phone
           );
   
-          array_push($orders_arr["records"], $order_item);
+          array_push($guests_arr["records"], $guest_item);
       }
   
       // set response code - 200 OK
       http_response_code(200);
   
       // show products data
-      echo json_encode($orders_arr);
+      echo json_encode($guests_arr);
   }
   
   else{
@@ -65,7 +66,7 @@
   
       // tell the user no products found
       echo json_encode(
-          array("message" => "No products found.")
+          array("message" => "No guests found.")
       );
   }
 ?>
