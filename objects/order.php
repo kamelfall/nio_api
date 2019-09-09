@@ -186,15 +186,23 @@
       return false;
       
     }
+
+
     // search products
     function search($keywords){
     
       // select all query
-      $query = "SELECT o.id, o.date, o.customer_id, o.time, o.seats, 
-                g.first_name, g.last_name, g.email, g.phone 
-                FROM orders AS o INNER JOIN guests g 
-                ON o.customer_id = g.id WHERE g.last_name LIKE ? OR g.email LIKE ? OR o.id LIKE ? 
-                ORDER BY o.date ASC";
+      $query = "SELECT
+                  c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created
+              FROM
+                  " . $this->table_name . " p
+                  LEFT JOIN
+                      categories c
+                          ON p.category_id = c.id
+              WHERE
+                  p.name LIKE ? OR p.description LIKE ? OR c.name LIKE ?
+              ORDER BY
+                  p.created DESC";
 
       // prepare query statement
       $stmt = $this->conn->prepare($query);
