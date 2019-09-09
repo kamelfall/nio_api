@@ -39,11 +39,7 @@
           extract($row);
   
           $guest_item=array(
-              "order_id" => $id,
-              "date" => $date,
-              "customer_id" => $customer_id,
-              "time" => $time,
-              "seats" => $seats,
+              "id" => $id,
               "first_name" => $first_name,
               "last_name" => $last_name,
               "email" => $email,
