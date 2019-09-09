@@ -19,8 +19,6 @@
   
   // get product id
   $data =  $_GET["id"];
-
-  echo($data);
   
   // set product id to be deleted
   $order->id = $data;
