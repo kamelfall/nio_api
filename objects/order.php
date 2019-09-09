@@ -186,8 +186,6 @@
       return false;
       
     }
-
-
     // search products
     function search($keywords){
     
