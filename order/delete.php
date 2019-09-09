@@ -18,10 +18,10 @@
   $order = new Order($db);
   
   // get product id
-  $data = json_decode(file_get_contents("php://input"));
+  $data = $_GET["id"];
   
   // set product id to be deleted
-  $order->id = $data->id;
+  $order->id = $data;
   
   // delete the product
   if($order->delete()){
