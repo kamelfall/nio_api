@@ -9,7 +9,7 @@
     // get database connection
     include_once '../config/database.php';
     
-    // instantiate product object
+    // instantiate order object
     include_once '../objects/order.php';
     
     $database = new Database();
@@ -28,13 +28,13 @@
         !empty($data->seats)
     ){
     
-      // set product property values
+      // set order property values
       $order->date = $data->date;
       $order->customer_id = $data->customer_id;
       $order->time = $data->time;
       $order->seats = $data->seats;
   
-      // create the product
+      // create the order
       if($order->create()){
   
           // set response code - 201 created

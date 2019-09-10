@@ -14,22 +14,22 @@
   $database = new Database();
   $db = $database->getConnection();
   
-  // prepare product object
+  // prepare order object
   $order = new Order($db);
   
-  // get id of product to be edited
+  // get id of order to be edited
   $data = json_decode(file_get_contents("php://input"));
   
-  // set ID property of product to be edited
+  // set ID property of order to be edited
   $order->id = $data->id;
   
-  // set product property values
+  // set order property values
   $order->date = $data->date;
   $order->customer_id = $data->customer_id;
   $order->time = $data->time;
   $order->seats = $data->seats;
   
-  // update the product
+  // update the order
   if($order->update()){
   
       // set response code - 200 ok
@@ -39,7 +39,7 @@
       echo json_encode(array("message" => "Order was updated."));
   }
   
-  // if unable to update the product, tell the user
+  // if unable to update the order, tell the user
   else{
   
       // set response code - 503 service unavailable

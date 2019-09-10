@@ -10,7 +10,7 @@
   // get database connection
   include_once '../config/database.php';
 
-  // instantiate product object
+  // instantiate guest object
   include_once '../objects/guest.php';
   
   $database = new Database();
