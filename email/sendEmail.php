@@ -6,11 +6,6 @@
     header("Access-Control-Max-Age: 3600");
     header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
     
-    // instantiate product object
-    include_once '../objects/email.php';
-    
-    $email = new Email();
-    
     // get posted data
     $data = json_decode(file_get_contents("php://input"));
     
@@ -23,9 +18,13 @@
         !empty($data->first_name) &&
         !empty($data->last_name)
     ){
+        $guestQuantity = "guests";
+        if($data->seats < 2){
+            $guestQuantity = "guest";
+        }
         $message = "Hello " . $data->first_name . " " . $data->last_name . 
-            "! You have booked a table for " . $data->seats . " guest(s) on " . $data->date . 
-            " at " . $data->time . ". See you there!";
+            "! You have booked a table for " . $data->seats . " " . $guestQuantity . 
+            " on " . $data->date . " at " . $data->time . ". See you there!";
         $message = wordwrap($message,70);
         $headers = 'From: nio@gmail.com' . "\r\n" .
         'Reply-To: nio@gmail.com' . "\r\n" . 'X-Mailer: PHP/' . phpversion();
