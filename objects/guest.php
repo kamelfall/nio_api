@@ -16,23 +16,6 @@
         $this->conn = $db;
     }
 
-    // used by select drop-down list
-    public function read(){
-    
-      //select all data
-      $query = "SELECT
-                  id, first_name, last_name, email, phone
-              FROM
-                  " . $this->table_name . "
-              ORDER BY
-                  id";
-
-      $stmt = $this->conn->prepare( $query );
-      $stmt->execute();
-
-      return $stmt;
-    }
-
     public function createCustomer() {
       $query = "INSERT INTO " . $this->table_name . 
       " SET first_name=:first_name, 
@@ -41,7 +24,6 @@
           phone=:phone";
 
       $stmt = $this->conn->prepare($query);
-      //$stmt->execute();
 
       $this->first_name=htmlspecialchars(strip_tags($this->first_name));
       $this->last_name=htmlspecialchars(strip_tags($this->last_name));
@@ -66,15 +48,11 @@
       $query = "SELECT g.id, g.first_name, g.last_name, g.email, g.phone 
                 FROM guests AS g WHERE g.email = ?";
 
-
-      //$query = "SELECT * FROM guests";
-
       // prepare query statement
       $stmt = $this->conn->prepare($query);
 
       // sanitize
       $keywords=htmlspecialchars(strip_tags($keywords));
-      //$keywords = "%{$keywords}%";
 
       // bind
       $stmt->bindParam(1, $keywords);

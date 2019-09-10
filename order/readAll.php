@@ -14,7 +14,7 @@
   // initialize object
   $order = new Order($db);
   
-  // query products
+  // query orders
   $stmt = $order->readAll();
   $num = $stmt->rowCount();
   
@@ -26,8 +26,6 @@
       $orders_arr["records"]=array();
   
       // retrieve our table contents
-      // fetch() is faster than fetchAll()
-      // http://stackoverflow.com/questions/2770630/pdofetchall-vs-pdofetch-in-a-loop
       while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
           // extract row
           // this will make $row['name'] to
@@ -52,7 +50,7 @@
       // set response code - 200 OK
       http_response_code(200);
   
-      // show products data in json format
+      // show orders data in json format
       echo json_encode($orders_arr);
       
   } else {

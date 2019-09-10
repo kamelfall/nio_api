@@ -18,18 +18,29 @@
         !empty($data->first_name) &&
         !empty($data->last_name)
     ){
+        // check quantity of guest to customize message
         $guestQuantity = "guests";
         if($data->seats < 2){
             $guestQuantity = "guest";
         }
+
+        // email message
         $message = "Hello " . $data->first_name . " " . $data->last_name . 
             "! You have booked a table for " . $data->seats . " " . $guestQuantity . 
             " on " . $data->date . " at " . $data->time . ". See you there!";
+
+        // wrapping email message
         $message = wordwrap($message,70);
+
+        // adding headers
         $headers = 'From: nio@gmail.com' . "\r\n" .
         'Reply-To: nio@gmail.com' . "\r\n" . 'X-Mailer: PHP/' . phpversion();
+
+        // sending email
         mail($data->email, "Your booking confirmation", $message, $headers);
     } else {
+
+        // error response
         echo json_encode(array("message" => "Unable to send email. Data is incomplete."));
     }
 ?>
