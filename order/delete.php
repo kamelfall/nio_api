@@ -14,16 +14,16 @@
   $database = new Database();
   $db = $database->getConnection();
   
-  // prepare product object
+  // prepare order object
   $order = new Order($db);
   
-  // get product id
+  // get order id
   $data = $_GET["id"];
   
-  // set product id to be deleted
+  // set order id to be deleted
   $order->id = $data;
   
-  // delete the product
+  // delete the order
   if($order->delete()){
   
       // set response code - 200 ok
@@ -33,7 +33,7 @@
       echo json_encode(array("message" => "Order was deleted."));
   }
   
-  // if unable to delete the product
+  // if unable to delete the order
   else{
   
       // set response code - 503 service unavailable
