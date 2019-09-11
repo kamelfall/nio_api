@@ -136,7 +136,7 @@
       $query = "SELECT o.id, o.date, o.customer_id, o.time, o.seats, 
                 g.first_name, g.last_name, g.email, g.phone 
                 FROM orders AS o INNER JOIN guests g 
-                ON o.customer_id = g.id WHERE g.last_name LIKE ? OR g.email LIKE ? OR o.id LIKE ? 
+                ON o.customer_id = g.id WHERE g.last_name LIKE ? OR o.id LIKE ? 
                 ORDER BY o.date ASC";
 
       // prepare query statement
@@ -149,7 +149,6 @@
       // bind
       $stmt->bindParam(1, $keywords);
       $stmt->bindParam(2, $keywords);
-      $stmt->bindParam(3, $keywords);
 
       // execute query
       $stmt->execute();
