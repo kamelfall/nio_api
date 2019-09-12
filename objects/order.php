@@ -72,9 +72,6 @@
       $query = "UPDATE
                   " . $this->table_name . "
               SET
-                  date = :date,
-                  customer_id = :customer_id,
-                  time = :time,
                   seats = :seats
               WHERE
                   id = :id";
@@ -83,16 +80,10 @@
       $stmt = $this->conn->prepare($query);
 
       // sanitize
-      $this->date=htmlspecialchars(strip_tags($this->date));
-      $this->customer_id=htmlspecialchars(strip_tags($this->customer_id));
-      $this->time=htmlspecialchars(strip_tags($this->time));
       $this->seats=htmlspecialchars(strip_tags($this->seats));
       $this->id=htmlspecialchars(strip_tags($this->id));
 
       // bind new values
-      $stmt->bindParam(':date', $this->date);
-      $stmt->bindParam(':customer_id', $this->customer_id);
-      $stmt->bindParam(':time', $this->time);
       $stmt->bindParam(':seats', $this->seats);
       $stmt->bindParam(':id', $this->id);
 
