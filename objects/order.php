@@ -68,13 +68,10 @@
     // update the order
     function update(){
     
-      // update query TODO: FIX QUERY TO EDIT BOTH TABLES
+      // update query
       $query = "UPDATE
                   " . $this->table_name . "
               SET
-                  first_name = :first_name,
-                  last_name = :last_name,
-                  phone = :phone,
                   seats = :seats
               WHERE
                   id = :id";
@@ -83,16 +80,10 @@
       $stmt = $this->conn->prepare($query);
 
       // sanitize
-      $this->first_name=htmlspecialchars(strip_tags($this->first_name));
-      $this->last_name=htmlspecialchars(strip_tags($this->last_name));
-      $this->phone=htmlspecialchars(strip_tags($this->phone));
       $this->seats=htmlspecialchars(strip_tags($this->seats));
       $this->id=htmlspecialchars(strip_tags($this->id));
 
       // bind new values
-      $stmt->bindParam(':first_name', $this->first_name);
-      $stmt->bindParam(':last_name', $this->last_name);
-      $stmt->bindParam(':phone', $this->phone);
       $stmt->bindParam(':seats', $this->seats);
       $stmt->bindParam(':id', $this->id);
 
