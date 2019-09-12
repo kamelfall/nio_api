@@ -24,9 +24,9 @@
   $order->id = $data->id;
   
   // set order property values
-  $order->date = $data->date;
-  $order->customer_id = $data->customer_id;
-  $order->time = $data->time;
+  $order->first_name = $data->first_name;
+  $order->last_name = $data->last_name;
+  $order->phone = $data->phone;
   $order->seats = $data->seats;
   
   // update the order
